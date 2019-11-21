@@ -47,16 +47,31 @@ function init() {
 // Assign clicked square to a variable
 function handleClick(evt) {
     const selectedIndex = parseInt(evt.target.dataset.index);
-    if(gameboard[selectedIndex]) return;
+    if(gameboard[selectedIndex] || winner) return;
     gameboard[selectedIndex] = turn;
     turn *= -1;
+    winner = checkwinner();
+    console.log('check winner: ' + winner);
     render(); 
 }
+
+function checkwinner() {
+    for(let i = 0; i < COMBOS.length; i++){
+        if(Math.abs(gameboard[COMBOS[i][0]] + 
+            gameboard[COMBOS[i][1]] + 
+            gameboard[COMBOS[i][2]]) === 3) return gameboard[COMBOS[i][0]];
+    }
+    if(gameboard.includes(null)) return false;
+    return 'T';
+    }
 
 function render() {
     gameboard.forEach(function(elem, index){
         squares[index].textContent = KEY[elem];
     });
     message.textContent = `${KEY[turn]}'s turn'`;
+    if(winner === 1) alert('X wins!');
+    if(winner === -1) alert('Y wins!');
+    if(winner === 'T') alert('Tie!');
 }
 
